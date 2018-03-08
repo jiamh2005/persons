@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # This is a _very simple_ example of a web service that recognizes faces in uploaded images.
 # Upload an image file and it will check if the image contains a picture of Barack Obama.
@@ -16,6 +17,7 @@
 import os
 from flask import Flask, jsonify, request, redirect, send_from_directory
 from werkzeug import secure_filename
+from landmark import landmark
 
 # You can change this to any folder on your system
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'txt'}
@@ -64,6 +66,8 @@ def detect_faces_in_image(file_stream):
 
     filename = secure_filename(file_stream.filename)
     file_stream.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    landmark(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
 
     # Return the result as json
     result = {
