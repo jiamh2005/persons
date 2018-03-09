@@ -23,4 +23,14 @@ def landmark(filepath):
     dets = detector(img, 1)
     print("Number of faces detected: {}".format(len(dets)))
 
-    dlib.save_face_chips(img, dets, filepath, 150, 0.25)
+    faces = dlib.full_object_detections()
+
+    for k, d in enumerate(dets):
+        print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
+            k, d.left(), d.top(), d.right(), d.bottom()))
+        # Get the landmarks/parts for the face in box d.
+        shape = predictor(img, d)
+        print("Part 0: {}, Part 1: {} ...".format(shape.part(0), shape.part(1)))
+        faces.append(shape)
+
+    dlib.save_face_chips(img, faces, filepath, 150, 0.25)
