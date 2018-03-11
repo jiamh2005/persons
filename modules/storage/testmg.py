@@ -2,16 +2,7 @@
 # -*- coding:utf-8 -*-
 
 from storage import *
-from pymongo import MongoClient
 from bson.objectid import ObjectId
-
-conn = MongoClient('192.168.1.200', 27017)
-
-# 连接mydb数据库，没有则自动创建
-db = conn.mydb
-
-# 使用test_set集合，没有则自动创建
-my_set = db.persons
 
 # 添加多条数据到集合中
 persons=[
@@ -47,13 +38,13 @@ persons=[
 		"heap": [{"url": "http://jia.top/ppp/12333.jpg"}]
 	}]
 
-## my_set.insert(persons)
+##CreatePerson(persons)
 
 # 查询全部
 
-RemovePerson(ObjectId('5aa24174c76ac72c545bcf24'))
-UpdatePersonPics('123', {"pic":"1233221", "locate":[12,232,22,11]})
-UpdatePersonFaces('123',{"url":"/1233.png", "descriptor":[12,232,22,11,234,3432234,23423]})
+# RemovePerson(ObjectId('5aa24174c76ac72c545bcf24'))
+#UpdatePersonPics('123', {"pic":"1233221", "locate":[12,232,22,11]})
+#UpdatePersonFaces('123',{"url":"/1233.png", "descriptor":[12,232,22,11,234,3432234,23423]})
 mydata = GetAllPersonFaces()
 for i in mydata:
     print(i)

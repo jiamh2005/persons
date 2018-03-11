@@ -19,6 +19,8 @@ from flask import Flask, jsonify, request, redirect, send_from_directory
 from werkzeug import secure_filename
 from landmark import landmark
 
+from modules.filenamegen import nsfile, file_extension
+
 # You can change this to any folder on your system
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'txt'}
 UPLOAD_FOLDER = 'static/imgdata'
@@ -28,7 +30,6 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config.from_object(__name__)
 app.config.from_envvar('PERSONS_SETTINGS', silent=True)
-
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -49,7 +50,7 @@ def upload_image():
 
         if file and allowed_file(file.filename):
             # The image file seems valid! Detect faces and return the result.
-            return detect_faces_in_image(file)
+            return save_faces_and_image(file)
 
     # If no valid image file was uploaded, show the file upload form:
     return '''
@@ -62,12 +63,12 @@ def upload_image():
     </form>
     '''
 
-def detect_faces_in_image(file_stream):
+def save_faces_and_image(file_stream):
 
-    filename = secure_filename(file_stream.filename)
-    file_stream.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    landmark(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
+    filenames = nsfile(1)
+    fname = filenames[0]+file_extension(file_stream.filename)
+    file_stream.save(os.path.join(app.config['UPLOAD_FOLDER'], fname))
+    landmark(os.path.join(app.config['UPLOAD_FOLDER'], fname))
 
     # Return the result as json
     result = {
@@ -75,6 +76,7 @@ def detect_faces_in_image(file_stream):
         "is_picture_of_obama": "no"
     }
     return jsonify(result)
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, debug=True)

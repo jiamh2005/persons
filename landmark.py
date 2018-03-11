@@ -8,10 +8,16 @@ import glob
 import numpy as np
 from skimage import io
 
+from modules.storage.storage import *
+from modules.filenamegen import nsfile, file_dir
+
 def landmark(filepath):
+
+    filepath = filepath.replace("\\","/")
 
     predictor_path = "samples/models/shape_predictor_5_face_landmarks.dat"
     face_rec_model_path = "samples/models/dlib_face_recognition_resnet_model_v1.dat"
+    files_dir = file_dir(filepath)+'/'
 
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(predictor_path)
@@ -26,29 +32,16 @@ def landmark(filepath):
     dets = detector(img, 1)
     print("Number of faces detected: {}".format(len(dets)))
 
-    faces = dlib.full_object_detections()
+    SaveImage(filepath,dets)
+
+    ##faces = dlib.full_object_detections()
 
     for k, d in enumerate(dets):
-        print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
-            k, d.left(), d.top(), d.right(), d.bottom()))
         # Get the landmarks/parts for the face in box d.
         shape = predictor(img, d)
-        print("Part 0: {}, Part 1: {} ...".format(shape.part(0), shape.part(1)))
-        faces.append(shape)
+        ##faces.append(shape)
         face_descriptor = facerec.compute_face_descriptor(img, shape)
-        print(face_descriptor)
-
-    dlib.save_face_chips(img, faces, filepath, 150, 0.25)
-
-def face_distance(face_encodings, face_to_compare):
-    """
-    Given a list of face encodings, compare them to a known face encoding and get a euclidean distance
-    for each comparison face. The distance tells you how similar the faces are.
-    :param faces: List of face encodings to compare
-    :param face_to_compare: A face encoding to compare against
-    :return: A numpy ndarray with the distance for each face in the same order as the 'faces' array
-    """
-    if len(face_encodings) == 0:
-        return np.empty((0))
-
-    return np.linalg.norm(face_encodings - face_to_compare, axis=1)
+        #print(face_descriptor)
+        filenames = nsfile(1)
+        dlib.save_face_chip(img, shape, files_dir+filenames[0]+'.jpg', 150, 0.25)
+        SaveFace(filenames[0]+'.jpg',face_descriptor)
