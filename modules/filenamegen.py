@@ -32,6 +32,10 @@ def file_dir(path):
     path = path.replace("\\","/")
     return os.path.split(path)[0]
 
+def file_name(path):
+    filename = os.path.split(path)[1]
+    return os.path.splitext(filename)[0]
+
 if __name__ == '__main__':
     s = input("Please input number of files:")
     print nsfile(s)

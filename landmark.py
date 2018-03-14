@@ -32,7 +32,10 @@ def landmark(filepath):
     dets = detector(img, 1)
     print("Number of faces detected: {}".format(len(dets)))
 
-    SaveImage(filepath,dets)
+    locations = []
+    for l in dets:
+        locations.append([l.left(), l.right(), l.top(), l.bottom()])
+    SaveImage(filepath,locations)
 
     ##faces = dlib.full_object_detections()
 
@@ -41,7 +44,11 @@ def landmark(filepath):
         shape = predictor(img, d)
         ##faces.append(shape)
         face_descriptor = facerec.compute_face_descriptor(img, shape)
-        #print(face_descriptor)
+
         filenames = nsfile(1)
-        dlib.save_face_chip(img, shape, files_dir+filenames[0]+'.jpg', 150, 0.25)
-        SaveFace(filenames[0]+'.jpg',face_descriptor)
+        dlib.save_face_chip(img, shape, files_dir+filenames[0], 150, 0.25)
+
+        fps = []
+        for p in face_descriptor:
+            fps.append(p)
+        SaveFace(filenames[0]+'.jpg',fps, filepath)

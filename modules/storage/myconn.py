@@ -8,4 +8,5 @@ conn = MongoClient(SERVER_ADDRESS, 27017)
 # 连接mydb数据库，没有则自动创建
 db = conn.mydb
 # 使用test_set集合，没有则自动创建
-my_set = db.persons
+my_pics = db.pics
+my_persons = db.persons
