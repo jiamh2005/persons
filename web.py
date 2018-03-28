@@ -20,6 +20,7 @@ from werkzeug import secure_filename
 from landmark import landmark
 
 from modules.filenamegen import nsfile, file_extension
+from modules.storage.storage import *
 
 # You can change this to any folder on your system
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'txt'}
@@ -76,6 +77,20 @@ def save_faces_and_image(file_stream):
         "is_picture_of_obama": "no"
     }
     return jsonify(result)
+
+@app.route('/api/v1/persons', methods=['GET'])
+def get_persons():
+    results = GetAllPersonFaces()
+    persons = []
+    for p in results :
+        p['_id'] = ' '
+        print p
+        print '-----------------------------'
+        persons.append(p)
+    return jsonify(persons)
+
+## 带参数的写法
+## tasks/(?P<resource_id>\d+)/voters
 
 
 if __name__ == "__main__":
